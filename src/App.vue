@@ -1,8 +1,13 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Counter from '@/components/Counter.vue'
+</script>
 
 <template>
   <div class="h-screen flex justify-center items-center">
-    <h1>Bonjour le monde</h1>
+    <div class="space-y-4">
+      <h1>Bonjour le monde</h1>
+      <Counter />
+    </div>
   </div>
 </template>
 
