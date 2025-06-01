@@ -6,7 +6,7 @@ import Counter from '@/components/Counter.vue'
   <div class="h-screen flex justify-center items-center">
     <div class="space-y-4">
       <h1>Bonjour le monde</h1>
-      <Counter />
+      <Counter :initial-value="2" :step="2" />
     </div>
   </div>
 </template>
