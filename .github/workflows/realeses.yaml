@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - master # Or your main branch name (e.g., master)
+      - main # Or your main branch name (e.g., master)
 
 jobs:
   release:
@@ -22,7 +22,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "lts/*" # Or your desired Node.js version
+          node-version: 'lts/*' # Or your desired Node.js version
           # cache: "npm"
 
       - name: Install dependencies
