@@ -6,13 +6,14 @@ defineOptions({ name: 'AppCounter' })
 
 interface CounterProps {
   initialValue?: number
+  step?: number
 }
 
 const props = withDefaults(defineProps<CounterProps>(), {
   initialValue: 0,
 })
 
-const { count, decrement, increment } = useCounter(props.initialValue)
+const { count, decrement, increment } = useCounter(props.initialValue, props.step)
 </script>
 
 <template>
