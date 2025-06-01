@@ -14,19 +14,35 @@ import { Input } from '@/components/ui/input'
 
 import { NoteSchemas, type NoteSchemasType } from '@/lib/schemas/notes'
 
+type Props = {
+  defaultValues?: Partial<NoteSchemasType>
+}
+
+type Emits = {
+  onSubmit: [value: NoteSchemasType]
+}
+
 defineOptions({ name: 'NoteForm' })
+
+const DEFAULT_VALUES: NoteSchemasType = {
+  title: '',
+  description: '',
+}
+const props = withDefaults(defineProps<Props>(), {})
+const emits = defineEmits<Emits>()
 
 const form = useForm<NoteSchemasType>({
   validationSchema: toTypedSchema(NoteSchemas),
+  initialValues: { ...DEFAULT_VALUES, ...props.defaultValues },
 })
 
 const onSubmit = form.handleSubmit((values) => {
-  console.log('Form submitted!', values)
+  emits('onSubmit', values)
 })
 </script>
 
 <template>
-  <form @submit="onSubmit">
+  <form @submit="onSubmit" class="space-y-5">
     <FormField v-slot="{ componentField }" name="title">
       <FormItem>
         <FormLabel>Title</FormLabel>
@@ -47,6 +63,6 @@ const onSubmit = form.handleSubmit((values) => {
         <FormMessage />
       </FormItem>
     </FormField>
-    <Button type="submit"> Submit </Button>
+    <slot></slot>
   </form>
 </template>
