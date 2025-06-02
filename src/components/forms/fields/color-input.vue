@@ -1,39 +1,39 @@
 <script setup lang="ts">
-import type { ColorSchemasType } from '@/lib/schemas/notes'
+import { colors } from '@/constants/colors'
 defineOptions({ name: 'ColorChoisesInput' })
 
 type Props = {
-  value?: ColorSchemasType
+  value?: string | number
 }
 
 type Emit = {
-  onChange: [value: ColorSchemasType]
+  onChange: [value: string | number]
 }
 
 const props = withDefaults(defineProps<Props>(), {})
 const emit = defineEmits<Emit>()
 
-const colors: ColorSchemasType[] = [
-  { bgColor: 'blue', textColor: '#fff' },
-  { bgColor: 'red', textColor: '#fff' },
-]
-
-const isSelected = (color: ColorSchemasType) => {
-  return props.value?.bgColor === color.bgColor && props.value.textColor === color.textColor
-}
-const handleSelectColor = (color: ColorSchemasType) => {
+const handleSelectColor = (color: number | string) => {
   emit('onChange', color)
 }
 </script>
 <template>
-  <div class="flex gap-5 items-center">
-    <div v-for="(color, idx) in colors" :key="`key${idx}`">
+  <div class="flex flex-wrap gap-3">
+    <div v-for="(color, idx) in colors" :key="`key${idx}`" class="flex flex-wrap gap-3">
       <div
-        :class="['h-10 w-10 cursor-pointer rounded-full', isSelected(color) && 'ring-2']"
+        :class="[
+          'w-9 h-9 rounded-full border-2 border-gray-300 cursor-pointer ',
+          props.value === color.id ? 'ring-2 ring-blue-500' : '',
+        ]"
         :style="{ backgroundColor: color.bgColor }"
-        @click="handleSelectColor(color)"
+        @click="handleSelectColor(color.id)"
       />
     </div>
+    <div
+      class="w-9 h-9 rounded-full border-2 border-gray-300 cursor-pointer"
+      :style="{ backgroundColor: 'transparent' }"
+      @click="handleSelectColor('')"
+    />
   </div>
 </template>
 

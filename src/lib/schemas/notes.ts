@@ -11,7 +11,7 @@ export type ColorSchemasType = z.infer<typeof ColorSchemas>
 export const NoteSchemas = z.object({
   title: z.string().nonempty(),
   description: z.string().nonempty(),
-  color: ColorSchemas.optional()
+  color: z.union([z.number(),z.string()]).optional()
 })
 
 export type NoteSchemasType = z.infer<typeof NoteSchemas>

@@ -28,6 +28,7 @@ defineOptions({ name: 'NoteForm' })
 const DEFAULT_VALUES: NoteSchemasType = {
   title: '',
   description: '',
+  color: '',
 }
 const props = withDefaults(defineProps<Props>(), {})
 const emits = defineEmits<Emits>()
