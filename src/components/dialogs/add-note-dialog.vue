@@ -8,16 +8,18 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from '@/components/ui/dialog'
 import NoteForm from '@/components/forms/note-form.vue'
-// import { useTemplateRef } from 'vue'
+import { ref } from 'vue'
 import type { NoteSchemasType } from '@/lib/schemas/notes'
 
 defineOptions({ name: 'AddNoteDialog' })
-// const compRef = useTemplateRef<HTMLButtonElement>('button-add-note-form')
+const btn = ref<HTMLButtonElement | null>(null)
 
 const handleSubmit = () => {
   // compRef.value?.click()
+  console.log(btn.value?.click)
 }
 
 const onSubmit = (value: NoteSchemasType) => {
@@ -36,10 +38,13 @@ const onSubmit = (value: NoteSchemasType) => {
         <DialogDescription> Ajouter une note </DialogDescription>
       </DialogHeader>
       <NoteForm @on-submit="onSubmit" :default-values="{ title: 'kilumba' }">
-        <Button ref="button-add-note-form" type="submit">Enregistrer</Button>
+        <Button type="submit">Enregistrer</Button>
       </NoteForm>
       <DialogFooter>
-        <Button type="button" @click="handleSubmit"> Save changes </Button>
+        <DialogClose as-child>
+          <Button ref="btn" type="button" variant="secondary"> Fermer </Button>
+        </DialogClose>
+        <Button type="button" @click="handleSubmit"> Enregistrer </Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>
