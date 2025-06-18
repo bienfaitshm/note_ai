@@ -18,8 +18,10 @@ defineOptions({ name: 'AddNoteDialog' })
 const btn = ref<HTMLButtonElement | null>(null)
 
 const handleSubmit = () => {
-  // compRef.value?.click()
-  console.log(btn.value?.click)
+  if (btn.value) {
+    console.log('Le bouton submit :', btn.value)
+    btn.value.click() // ou autre
+  }
 }
 
 const onSubmit = (value: NoteSchemasType) => {
@@ -37,12 +39,13 @@ const onSubmit = (value: NoteSchemasType) => {
         <DialogTitle>Nouvelle note</DialogTitle>
         <DialogDescription> Ajouter une note </DialogDescription>
       </DialogHeader>
-      <NoteForm @on-submit="onSubmit" :default-values="{ title: 'kilumba' }">
-        <Button type="submit">Enregistrer</Button>
+      <NoteForm @on-submit="onSubmit">
+        <button ref="btn" type="submit" class="hidden">Enregistrer</button>
+        <!-- <Button >Enregistrer</Button> -->
       </NoteForm>
       <DialogFooter>
         <DialogClose as-child>
-          <Button ref="btn" type="button" variant="secondary"> Fermer </Button>
+          <Button type="button" variant="secondary"> Fermer </Button>
         </DialogClose>
         <Button type="button" @click="handleSubmit"> Enregistrer </Button>
       </DialogFooter>

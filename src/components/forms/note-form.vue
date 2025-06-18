@@ -36,6 +36,7 @@ const emits = defineEmits<Emits>()
 const form = useForm<NoteSchemasType>({
   validationSchema: toTypedSchema(NoteSchemas),
   initialValues: { ...DEFAULT_VALUES, ...props.defaultValues },
+  validateOnMount: false,
 })
 
 const onSubmit = form.handleSubmit((values) => {
@@ -49,7 +50,7 @@ const onSubmit = form.handleSubmit((values) => {
       <FormItem>
         <FormLabel>Title</FormLabel>
         <FormControl>
-          <Input type="text" placeholder="shadcn" v-bind="componentField" />
+          <Input type="text" placeholder="Aa." v-bind="componentField" />
         </FormControl>
         <FormDescription> Titre de la note </FormDescription>
         <FormMessage />
@@ -70,7 +71,6 @@ const onSubmit = form.handleSubmit((values) => {
         <FormLabel>Couleur</FormLabel>
         <FormControl>
           <ColorInput :value="componentField.modelValue" @on-change="componentField.onChange" />
-          <!-- <Textarea placeholder="Aa" v-bind="componentField" /> -->
         </FormControl>
         <FormDescription>Couleur de la carte</FormDescription>
         <FormMessage />
