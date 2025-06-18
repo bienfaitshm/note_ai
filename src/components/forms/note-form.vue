@@ -15,6 +15,11 @@ import ColorInput from '@/components/forms/fields/color-input.vue'
 
 import { NoteSchemas, type NoteSchemasType } from '@/lib/schemas/notes'
 
+export type NoteFormRef = {
+  getTitle: () => string
+  setDescription: (description: string) => void
+}
+
 type Props = {
   defaultValues?: Partial<NoteSchemasType>
 }
@@ -42,6 +47,16 @@ const form = useForm<NoteSchemasType>({
 const onSubmit = form.handleSubmit((values) => {
   emits('onSubmit', values)
 })
+
+const getTitle = () => form.values.title
+const setDescription = (description: string) => {
+  form.setFieldValue('description', description)
+}
+
+defineExpose({
+  getTitle,
+  setDescription,
+})
 </script>
 
 <template>
@@ -58,7 +73,10 @@ const onSubmit = form.handleSubmit((values) => {
     </FormField>
     <FormField v-slot="{ componentField }" name="description">
       <FormItem>
-        <FormLabel>Description</FormLabel>
+        <div class="flex flex-row justify-between items-center">
+          <FormLabel>Description</FormLabel>
+          <slot name="genDescription"></slot>
+        </div>
         <FormControl>
           <Textarea placeholder="Aa" v-bind="componentField" />
         </FormControl>

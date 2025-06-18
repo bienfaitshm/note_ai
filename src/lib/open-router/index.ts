@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const baseURL = import.meta.env.AI_API_URL ||  "https://openrouter.ai/api/v1/"
-const API_KEY = import.meta.env.AI_API_KEY
+const API_KEY = "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"
 const AI_MODEL = "mistralai/mistral-nemo:free"
 
 const axiosClient = axios.create({baseURL, headers:{

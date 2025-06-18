@@ -10,22 +10,35 @@ import {
   DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog'
-import NoteForm from '@/components/forms/note-form.vue'
+import NoteForm, { type NoteFormRef } from '@/components/forms/note-form.vue'
+import ButtonGenerateDescription from '@/components/ButtonGenerateDescription.vue'
 import { ref } from 'vue'
 import type { NoteSchemasType } from '@/lib/schemas/notes'
 
 defineOptions({ name: 'AddNoteDialog' })
 const btn = ref<HTMLButtonElement | null>(null)
+const formRef = ref<NoteFormRef | null>(null)
 
 const handleSubmit = () => {
   if (btn.value) {
-    console.log('Le bouton submit :', btn.value)
     btn.value.click() // ou autre
   }
 }
 
 const onSubmit = (value: NoteSchemasType) => {
   console.log('Submit', value)
+}
+
+const getTitle = (): string | undefined => {
+  if (formRef.value) {
+    return formRef.value.getTitle?.()
+  }
+}
+
+const setDescription = (description: string) => {
+  if (formRef.value) {
+    return formRef.value.setDescription(description)
+  }
 }
 </script>
 
@@ -39,9 +52,14 @@ const onSubmit = (value: NoteSchemasType) => {
         <DialogTitle>Nouvelle note</DialogTitle>
         <DialogDescription> Ajouter une note </DialogDescription>
       </DialogHeader>
-      <NoteForm @on-submit="onSubmit">
+      <NoteForm ref="formRef" @on-submit="onSubmit">
         <button ref="btn" type="submit" class="hidden">Enregistrer</button>
-        <!-- <Button >Enregistrer</Button> -->
+        <template #genDescription>
+          <ButtonGenerateDescription
+            @on-generate-description="setDescription"
+            :get-title="getTitle"
+          />
+        </template>
       </NoteForm>
       <DialogFooter>
         <DialogClose as-child>
