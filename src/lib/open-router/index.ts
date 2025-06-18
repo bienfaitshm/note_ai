@@ -1,7 +1,7 @@
 import axios from "axios"
 
-const baseURL = process.env.AI_API_URL ||  "https://openrouter.ai/api/v1/"
-const API_KEY = process.env.AI_API_KEY
+const baseURL = import.meta.env.AI_API_URL ||  "https://openrouter.ai/api/v1/"
+const API_KEY = import.meta.env.AI_API_KEY
 const AI_MODEL = "mistralai/mistral-nemo:free"
 
 const axiosClient = axios.create({baseURL, headers:{
@@ -52,5 +52,5 @@ export async function postChatCompletions({messages, siteName, siteUrl}:ParamsTy
         "HTTP-Referer" : siteUrl,
         "X-Title":siteName
     }}).then(res=>res.data)
-    return response    
+    return response
 }
