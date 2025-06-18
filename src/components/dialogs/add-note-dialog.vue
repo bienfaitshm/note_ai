@@ -12,12 +12,15 @@ import {
 } from '@/components/ui/dialog'
 import NoteForm, { type NoteFormRef } from '@/components/forms/note-form.vue'
 import ButtonGenerateDescription from '@/components/ButtonGenerateDescription.vue'
+import ButtonLoader from '../ButtonLoader.vue'
+import { useCreateTask } from '@/hooks/queries'
 import { ref } from 'vue'
 import type { NoteSchemasType } from '@/lib/schemas/notes'
 
 defineOptions({ name: 'AddNoteDialog' })
 const btn = ref<HTMLButtonElement | null>(null)
 const formRef = ref<NoteFormRef | null>(null)
+const mutation = useCreateTask()
 
 const handleSubmit = () => {
   if (btn.value) {
@@ -26,7 +29,11 @@ const handleSubmit = () => {
 }
 
 const onSubmit = (value: NoteSchemasType) => {
-  console.log('Submit', value)
+  mutation.mutate(value, {
+    onSuccess(data) {
+      console.log('Task created', data)
+    },
+  })
 }
 
 const getTitle = (): string | undefined => {
@@ -65,7 +72,7 @@ const setDescription = (description: string) => {
         <DialogClose as-child>
           <Button type="button" variant="secondary"> Fermer </Button>
         </DialogClose>
-        <Button type="button" @click="handleSubmit"> Enregistrer </Button>
+        <ButtonLoader type="button" @click="handleSubmit"> Enregistrer </ButtonLoader>
       </DialogFooter>
     </DialogContent>
   </Dialog>
