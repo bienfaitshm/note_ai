@@ -15,6 +15,11 @@ import ColorInput from '@/components/forms/fields/color-input.vue'
 
 import { NoteSchemas, type NoteSchemasType } from '@/lib/schemas/notes'
 
+export type NoteFormRef = {
+  getTitle: () => string
+  setDescription: (description: string) => void
+}
+
 type Props = {
   defaultValues?: Partial<NoteSchemasType>
 }
@@ -36,10 +41,21 @@ const emits = defineEmits<Emits>()
 const form = useForm<NoteSchemasType>({
   validationSchema: toTypedSchema(NoteSchemas),
   initialValues: { ...DEFAULT_VALUES, ...props.defaultValues },
+  validateOnMount: false,
 })
 
 const onSubmit = form.handleSubmit((values) => {
   emits('onSubmit', values)
+})
+
+const getTitle = () => form.values.title
+const setDescription = (description: string) => {
+  form.setFieldValue('description', description)
+}
+
+defineExpose({
+  getTitle,
+  setDescription,
 })
 </script>
 
@@ -49,7 +65,7 @@ const onSubmit = form.handleSubmit((values) => {
       <FormItem>
         <FormLabel>Title</FormLabel>
         <FormControl>
-          <Input type="text" placeholder="shadcn" v-bind="componentField" />
+          <Input type="text" placeholder="Aa." v-bind="componentField" />
         </FormControl>
         <FormDescription> Titre de la note </FormDescription>
         <FormMessage />
@@ -57,7 +73,10 @@ const onSubmit = form.handleSubmit((values) => {
     </FormField>
     <FormField v-slot="{ componentField }" name="description">
       <FormItem>
-        <FormLabel>Description</FormLabel>
+        <div class="flex flex-row justify-between items-center">
+          <FormLabel>Description</FormLabel>
+          <slot name="genDescription"></slot>
+        </div>
         <FormControl>
           <Textarea placeholder="Aa" v-bind="componentField" />
         </FormControl>
@@ -70,7 +89,6 @@ const onSubmit = form.handleSubmit((values) => {
         <FormLabel>Couleur</FormLabel>
         <FormControl>
           <ColorInput :value="componentField.modelValue" @on-change="componentField.onChange" />
-          <!-- <Textarea placeholder="Aa" v-bind="componentField" /> -->
         </FormControl>
         <FormDescription>Couleur de la carte</FormDescription>
         <FormMessage />

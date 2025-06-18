@@ -10,20 +10,42 @@ import {
   DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog'
-import NoteForm from '@/components/forms/note-form.vue'
+import NoteForm, { type NoteFormRef } from '@/components/forms/note-form.vue'
+import ButtonGenerateDescription from '@/components/ButtonGenerateDescription.vue'
+import ButtonLoader from '../ButtonLoader.vue'
+import { useCreateTask } from '@/hooks/queries'
 import { ref } from 'vue'
 import type { NoteSchemasType } from '@/lib/schemas/notes'
 
 defineOptions({ name: 'AddNoteDialog' })
 const btn = ref<HTMLButtonElement | null>(null)
+const formRef = ref<NoteFormRef | null>(null)
+const mutation = useCreateTask()
 
 const handleSubmit = () => {
-  // compRef.value?.click()
-  console.log(btn.value?.click)
+  if (btn.value) {
+    btn.value.click() // ou autre
+  }
 }
 
 const onSubmit = (value: NoteSchemasType) => {
-  console.log('Submit', value)
+  mutation.mutate(value, {
+    onSuccess(data) {
+      console.log('Task created', data)
+    },
+  })
+}
+
+const getTitle = (): string | undefined => {
+  if (formRef.value) {
+    return formRef.value.getTitle?.()
+  }
+}
+
+const setDescription = (description: string) => {
+  if (formRef.value) {
+    return formRef.value.setDescription(description)
+  }
 }
 </script>
 
@@ -37,14 +59,20 @@ const onSubmit = (value: NoteSchemasType) => {
         <DialogTitle>Nouvelle note</DialogTitle>
         <DialogDescription> Ajouter une note </DialogDescription>
       </DialogHeader>
-      <NoteForm @on-submit="onSubmit" :default-values="{ title: 'kilumba' }">
-        <Button type="submit">Enregistrer</Button>
+      <NoteForm ref="formRef" @on-submit="onSubmit">
+        <button ref="btn" type="submit" class="hidden">Enregistrer</button>
+        <template #genDescription>
+          <ButtonGenerateDescription
+            @on-generate-description="setDescription"
+            :get-title="getTitle"
+          />
+        </template>
       </NoteForm>
       <DialogFooter>
         <DialogClose as-child>
-          <Button ref="btn" type="button" variant="secondary"> Fermer </Button>
+          <Button type="button" variant="secondary"> Fermer </Button>
         </DialogClose>
-        <Button type="button" @click="handleSubmit"> Enregistrer </Button>
+        <ButtonLoader type="button" @click="handleSubmit"> Enregistrer </ButtonLoader>
       </DialogFooter>
     </DialogContent>
   </Dialog>
