@@ -8,8 +8,7 @@ export type Task = {
     title: string;
     description?: string;
     completed: boolean;
-    color?: string;
-    dueDate: Date;
+    color?: string| number;
 };
 
 /**
@@ -55,9 +54,10 @@ export function getTask(id: string): Task | undefined {
  * @param task - The task data (excluding the ID).
  * @returns {Task} The newly created task with its unique ID.
  */
-export function createTask(task: Omit<Task, "id">): Task {
+export async function createTask(task: Omit<Task, "id"|"completed">): Promise<Task> {
     const newTask: Task = {
         id: generateUniqueString(),
+        completed:false,
         ...task,
     };
     addTasks(newTask);
@@ -67,12 +67,12 @@ export function createTask(task: Omit<Task, "id">): Task {
 /**
  * Updates an existing task in the store by merging the provided updates with the existing task.
  * If the task with the specified ID does not exist, no changes are made.
- * 
+ *
  * @param id - The unique ID of the task to update.
  * @param updatedTask - An object containing the fields to update. Only the provided fields will be updated.
  * @throws {Error} If the task with the specified ID is not found.
  */
-export function updateTask(id: string, updatedTask: Partial<Task>): void {
+export async function updateTask(id: string, updatedTask: Partial<Task>): Promise<Task>  {
     const tasks = getTasks();
     const taskIndex = tasks.findIndex((task) => task.id === id);
 
@@ -83,6 +83,7 @@ export function updateTask(id: string, updatedTask: Partial<Task>): void {
     const updatedTaskData = { ...tasks[taskIndex], ...updatedTask };
     tasks[taskIndex] = updatedTaskData;
     store.set(KEY_TASKS, tasks);
+    return updatedTaskData
 }
 
 
@@ -90,17 +91,18 @@ export function updateTask(id: string, updatedTask: Partial<Task>): void {
  * Deletes a task from the store by its unique ID.
  * @param id - The ID of the task to delete.
  */
-export function deleteTask(id: string): void {
+export async  function deleteTask(id: string): Promise<boolean> {
     const tasks = getTasks();
     const updatedTasks = tasks.filter((task) => task.id !== id);
     store.set(KEY_TASKS, updatedTasks);
+    return true
 }
 
 /**
  * Marks a task as toogle completed by its unique ID.
  * @param id - The ID of the task to mark as completed.
  */
-export function toggleTaskCompleted(id: string): void {
+export async function toggleTaskCompleted(id: string): Promise<Task> {
     const tasks = getTasks();
     const taskIndex = tasks.findIndex((task) => task.id === id);
 
@@ -111,4 +113,5 @@ export function toggleTaskCompleted(id: string): void {
     const updatedTaskData = { ...tasks[taskIndex], completed: !tasks[taskIndex].completed };
     tasks[taskIndex] = updatedTaskData;
     store.set(KEY_TASKS, tasks);
+    return updatedTaskData
 }
